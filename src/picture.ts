@@ -16,7 +16,8 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
     let numHeight = 0;
     let seqHeight = 0;
     let selected = 'thr';
-    let del = false;
+    let delone = false;
+    let delLine = false;
     let update = true;
 
     p.setup = () => {
@@ -32,7 +33,8 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
         const nh = numHeight;
         const sh = seqHeight;
         const sl = selected;
-        const de = del;
+        const de1 = delone;
+        const deLine = delLine;
         ({
             inputNumberList: input,
             numberSize: numSize,
@@ -40,7 +42,8 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
             numberHeight: numHeight,
             sequenceHeight: seqHeight,
             select: selected,
-            delete1: del,
+            delete1: delone,
+            deleteline: delLine,
         } = props);
         if (
             inp !== input ||
@@ -49,7 +52,8 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
             nh !== numHeight ||
             sh !== seqHeight ||
             sl !== selected ||
-            de !== del
+            de1 !== delone ||
+            deLine !== delLine
         ) {
             update = true;
         }
@@ -64,13 +68,13 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
                     p.resizeCanvas(0, 0);
                     return;
                 }
-                const parsedData = strArr.map(parseString);
+                const parsedData = strArr.map(x => parseString(x));
                 const canvasHeight = parsedData.reduce((acc, { depth }) => acc + (1 + depth) * numHeight, 0) + (strArr.length - 1) * seqHeight;
                 const canvasWidth = (0.5 + Math.max(...parsedData.map(({ width }) => width))) * numRange;
                 p.resizeCanvas(canvasWidth, canvasHeight);
                 let currentHeight = 0;
                 parsedData.forEach(({ array, depth }) => {
-                    drawMountain(array, p, numSize, numRange, numHeight, currentHeight, depth, selected, del);
+                    drawMountain(array, p, numSize, numRange, numHeight, currentHeight, depth, selected, delone, delLine);
                     currentHeight += (1 + depth) * numHeight + seqHeight;
                 });
             }
@@ -140,14 +144,15 @@ function drawMountain(
     seqHeight: number,
     depthMax: number,
     selected: string,
-    del: boolean
+    delone: boolean,
+    delLine: boolean
 ) {
     p.textSize(size);
     if (isSequence(seqOrMat)) {
         const { matSeq, matParent } = createMatrix(seqOrMat, depthMax);
         if (selected === 'BMS') {
             const seq = transform0YToBMS(matSeq, matParent);
-            drawMountain(seq, p, size, range, height, seqHeight, depthMax, selected, del);
+            drawMountain(seq, p, size, range, height, seqHeight, depthMax, selected, delone, delLine);
         } else {
             matSeq.forEach((row, j) => {
                 row.forEach((val, i) => {
@@ -156,9 +161,9 @@ function drawMountain(
                     if (j === 0) p.text(val, x1, y1);
                     else {
                         const parentIdx = matParent[j - 1][i];
-                        if (!del || !(row.every((_, x) => i !== matParent[j][x])) || parentIdx !== -1 || matParent[j][i] !== -1)
+                        if (!delone || !(row.every((_, x) => i !== matParent[j][x])) || parentIdx !== -1 || matParent[j][i] !== -1)
                             p.text(val, x1, y1);
-                        if (parentIdx !== -1) {
+                        if (!delLine && parentIdx !== -1) {
                             const x2 = (0.5 + parentIdx) * range;
                             const y2 = y1 + height;
                             p.line(x1, y1 + size / 2, x2, y2 - size / 2);
@@ -172,7 +177,7 @@ function drawMountain(
         let matParent = createMatrixForMatrix(seqOrMat, depthMax);
         if (selected === '0-Y') {
             const seq = transformBMSTo0Y(seqOrMat, matParent);
-            drawMountain(seq, p, size, range, height, seqHeight, depthMax, selected, del);
+            drawMountain(seq, p, size, range, height, seqHeight, depthMax, selected, delone, delLine);
         } else {
             seqOrMat.forEach((row, j) => {
                 row.forEach((val, i) => {
@@ -181,7 +186,7 @@ function drawMountain(
                     if (j !== depthMax) p.text(val, x1, y1);
                     if (j !== 0) {
                         const parentIdx = matParent[j - 1][i];
-                        if (parentIdx !== -1) {
+                        if (!delLine && (parentIdx !== -1)) {
                             const x2 = (0.5 + parentIdx) * range;
                             const y2 = y1 - height;
                             p.line(x1, y1 - size / 2, x2, y2 + size / 2);

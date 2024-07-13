@@ -52,18 +52,23 @@ main {
   font-size: large;
   font-weight: bold;
   position: relative;
+  cursor: pointer;
   top: 2px;
   width: 130px;
   height: 40px;
-  background-color: #00eeda;
+  background-color: #00eedada;
   color: #fff;
-  transition: background-color 0.5s;
+  transition: background-color 0.01s;
   border-radius: 8px;
   border: none;
 }
 
 .calButton:hover {
-  background-color: #004369;
+  background-color: #00eeda62;
+}
+
+.calButton:active {
+  background-color: #00eeda;
 }
 
 .selectCenter {
@@ -73,9 +78,10 @@ main {
   justify-content: center;
 }
 
-ul {
+.optionCheckbox {
+  display: grid;
   position: relative;
-  top: 6px;
+  top: 8px;
 }
 
 .hydra {

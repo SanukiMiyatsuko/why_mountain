@@ -11,6 +11,7 @@ export type MySketchProps = SketchProps & {
   sequenceHeight: number;
   select: string;
   delete1: boolean;
+  deleteline: boolean;
 };
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
   const [inputNumberHeight, setInputNumberHeight] = useState(63);
   const [inputSequenceHeight, setInputSequenceHeight] = useState(63);
   const [selected, setSelected] = useState('thr');
-  const [del, setDelete] = useState(false);
+  const [delone, setDeleteone] = useState(false);
+  const [delLine, setDeleteLine] = useState(false);
 
   const compute = () => {
     const strArr = inputA.split(/\n/).filter(line => line.trim() !== '');
@@ -92,12 +94,20 @@ function App() {
                   </select>
                 </div>
               </div>
-              <ul>
-                <li><label className="checkbox">
-                  <input type="checkbox" checked={del} onChange={() => setDelete(!del)} />
-                  &nbsp;余分な1を削除
-                </label></li>
-              </ul>
+              <div className="optionCheckbox">
+                <label className="checkbox">
+                  <input type="checkbox" checked={delLine} onChange={() => setDeleteLine(!delLine)} />
+                  &nbsp;線を削除
+                </label>
+                { selected === "0-Y" || selected === "thr" ? (
+                  <label className="checkbox">
+                    <input type="checkbox" checked={delone} onChange={() => setDeleteone(!delone)} />
+                    &nbsp;余分な1を削除
+                  </label>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
           </div>
           <div className='hydra'>
@@ -157,7 +167,8 @@ function App() {
           numberHeight={inputNumberHeight}
           sequenceHeight={inputSequenceHeight}
           select={selected}
-          delete1={del}
+          delete1={delone}
+          deleteline={delLine}
         />
       </main>
       <footer>
