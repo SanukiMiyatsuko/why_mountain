@@ -26,7 +26,7 @@ function App() {
   const [delLine, setDeleteLine] = useState(false);
 
   const compute = () => {
-    const strArr = inputA.split(/\n/).filter(line => line.trim() !== '');
+    const strArr = inputA.split(/[\n\s]/).filter(line => line.trim() !== '');
     if (strArr.length === 0 || !inputB) {
       return;
     }
@@ -61,102 +61,102 @@ function App() {
     <div className='app'>
       <header>why mounTain</header>
       <main>
-        <div className='option'>
-          <div className='inputAndCal'>
-            <textarea
-              className='inputText'
-              value={inputA}
-              onChange={(e) => setInputA(e.target.value)}
-              placeholder='入力A'
-              autoComplete='off'
-              rows={5}
-              cols={50}
-            />
-            <div className='miniInput'>
-              <input
-                className='inputNumber'
-                value={inputB}
-                onChange={(e) => setInputB(e.target.value)}
-                type='number'
-                placeholder='入力B'
-                autoComplete='off'
-                min='0'
-              />
-              <button onClick={() => compute()} className='calButton'>
-                A[B]を計算
-              </button>
-              <div className="selectCenter">
-                <div className="select is-rounded is-normal">
+        <div className='optionAndCal'>
+          <div className='option'>
+            <div className='inputCon'>
+              <div className='inputTab'>
+                <textarea
+                  className='inputText'
+                  value={inputA}
+                  onChange={(e) => setInputA(e.target.value)}
+                  placeholder='入力A'
+                  autoComplete='off'
+                  rows={5}
+                  cols={50}
+                />
+                <div className='miniInput'>
+                  <input
+                    className='inputNumber'
+                    value={inputB}
+                    onChange={(e) => setInputB(e.target.value)}
+                    type='number'
+                    placeholder='入力B'
+                    autoComplete='off'
+                    min='0'
+                  />
                   <select value={selected} onChange={e => setSelected(e.target.value)}>
                     <option value="0-Y">0-Y</option>
                     <option value="BMS">BMS</option>
                     <option value="thr">そのまま</option>
                   </select>
+                  <button className='calButton' onClick={() => compute()}>
+                    A[B]を計算
+                  </button>
+                </div>
+                <div className="optionCheckbox">
+                  <label className="checkbox">
+                    <input type="checkbox" checked={delLine} onChange={() => setDeleteLine(!delLine)} />
+                    &nbsp;線を削除
+                  </label>
+                  { selected !== "BMS" ? (
+                    <label className="checkbox">
+                      <input type="checkbox" checked={delone} onChange={() => setDeleteone(!delone)} />
+                      &nbsp;余分な1を削除
+                    </label>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div className='hydra'>
+                  <ul>
+                    <li>
+                      数字の大きさ：
+                      <input
+                        className='hydraSize'
+                        value={inputHeadSize}
+                        onChange={(e) => setInputHeadSize(parseInt(e.target.value))}
+                        min='0'
+                        max='200'
+                        type='range'
+                      />
+                    </li>
+                    <li>
+                      数字間の幅：
+                      <input
+                        className='hydraRange'
+                        value={inputNumberRange}
+                        onChange={(e) => setInputNumberRange(parseInt(e.target.value))}
+                        min='0'
+                        max='200'
+                        type='range'
+                      />
+                    </li>
+                    <li>
+                      数字間の高さ：
+                      <input
+                        className='hydraSize'
+                        value={inputNumberHeight}
+                        onChange={(e) => setInputNumberHeight(parseInt(e.target.value))}
+                        min='0'
+                        max='200'
+                        type='range'
+                      />
+                    </li>
+                    <li>
+                      数列間の高さ：
+                      <input
+                        className='hydraSize'
+                        value={inputSequenceHeight}
+                        onChange={(e) => setInputSequenceHeight(parseInt(e.target.value))}
+                        min='0'
+                        max='200'
+                        type='range'
+                      />
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div className="optionCheckbox">
-                <label className="checkbox">
-                  <input type="checkbox" checked={delLine} onChange={() => setDeleteLine(!delLine)} />
-                  &nbsp;線を削除
-                </label>
-                { selected === "0-Y" || selected === "thr" ? (
-                  <label className="checkbox">
-                    <input type="checkbox" checked={delone} onChange={() => setDeleteone(!delone)} />
-                    &nbsp;余分な1を削除
-                  </label>
-                ) : (
-                  <></>
-                )}
-              </div>
             </div>
-          </div>
-          <div className='hydra'>
-            <ul>
-              <li>
-                数字の大きさ：
-                <input
-                  className='hydraSize'
-                  value={inputHeadSize}
-                  onChange={(e) => setInputHeadSize(parseInt(e.target.value))}
-                  min='0'
-                  max='200'
-                  type='range'
-                />
-              </li>
-              <li>
-                数字間の幅：
-                <input
-                  className='hydraRange'
-                  value={inputNumberRange}
-                  onChange={(e) => setInputNumberRange(parseInt(e.target.value))}
-                  min='0'
-                  max='200'
-                  type='range'
-                />
-              </li>
-              <li>
-                数字間の高さ：
-                <input
-                  className='hydraSize'
-                  value={inputNumberHeight}
-                  onChange={(e) => setInputNumberHeight(parseInt(e.target.value))}
-                  min='0'
-                  max='200'
-                  type='range'
-                />
-              </li>
-              <li>
-                数列間の高さ：
-                <input
-                  className='hydraSize'
-                  value={inputSequenceHeight}
-                  onChange={(e) => setInputSequenceHeight(parseInt(e.target.value))}
-                  min='0'
-                  max='200'
-                  type='range'
-                />
-              </li>
-            </ul>
           </div>
         </div>
         <ReactP5Wrapper

@@ -63,7 +63,7 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
         try {
             if (update) {
                 update = false;
-                const strArr = input.split(/\n/).filter(line => line.trim() !== '');
+                const strArr = input.split(/[\n\s]/).filter(line => line.trim() !== '');
                 if (strArr.length === 0) {
                     p.resizeCanvas(0, 0);
                     return;
