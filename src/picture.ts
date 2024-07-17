@@ -60,8 +60,8 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
     };
 
     p.draw = () => {
-        try {
-            if (update) {
+        if (update) {
+            try {
                 update = false;
                 const strArr = input.split(/[\n\s]/).filter(line => line.trim() !== '');
                 if (strArr.length === 0) {
@@ -77,9 +77,9 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
                     drawMountain(array, p, numSize, numRange, numHeight, currentHeight, depth, selected, delone, delLine);
                     currentHeight += (1 + depth) * numHeight + seqHeight;
                 });
+            } catch (e) {
+                console.error("Error in draw function:", e);
             }
-        } catch (e) {
-            console.error("Error in draw function:", e);
         }
     };
 };
