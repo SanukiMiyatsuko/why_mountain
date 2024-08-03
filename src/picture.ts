@@ -1,8 +1,18 @@
 import p5 from "p5";
-import { P5CanvasInstance } from "react-p5-wrapper";
-import { MySketchProps } from "./App";
+import { P5CanvasInstance, SketchProps } from "react-p5-wrapper";
 
 // 型定義
+type MySketchProps = SketchProps & {
+    inputNumberList: string;
+    numberSize: number;
+    numberRange: number;
+    numberHeight: number;
+    sequenceHeight: number;
+    select: string;
+    delete1: boolean;
+    deleteline: boolean;
+};
+
 export type Sequence = number[];
 export type Matrix = number[][];
 
@@ -38,7 +48,7 @@ export const sketch_input = (p: P5CanvasInstance<MySketchProps>) => {
         ({
             inputNumberList: input,
             numberSize: numSize,
-            numberRange: numRange, 
+            numberRange: numRange,
             numberHeight: numHeight,
             sequenceHeight: seqHeight,
             select: selected,
@@ -99,7 +109,7 @@ export function parseString(str: string) {
         matrix.forEach(row => {
             while (row.length < maxCols) row.push(0);
         });
-        let mat = transformMatrix(matrix);
+        const mat = transformMatrix(matrix);
         mat.push(Array(matrix.length).fill(0));
         return {
             array: mat,
@@ -120,9 +130,9 @@ function calculateDepthMax(seq: Sequence): number {
 export function transformMatrix(matrix: Matrix): Matrix {
     const rows = matrix.length;
     const cols = matrix[0].length;
-    let result: number[][] = [];
+    const result: number[][] = [];
     for (let j = 0; j < cols; j++) {
-        let column: number[] = [];
+        const column: number[] = [];
         for (let i = 0; i < rows; i++) {
             column.push(matrix[i][j]);
         }
@@ -174,7 +184,7 @@ function drawMountain(
             });
         }
     } else {
-        let matParent = createMatrixForMatrix(seqOrMat, depthMax);
+        const matParent = createMatrixForMatrix(seqOrMat, depthMax);
         if (selected === '0-Y') {
             const seq = transformBMSTo0Y(seqOrMat, matParent);
             drawMountain(seq, p, size, range, height, seqHeight, depthMax, selected, delone, delLine);
@@ -200,9 +210,9 @@ function drawMountain(
 }
 
 export function transform0YToBMS(seq: Matrix, seqParent: Matrix): Matrix {
-    let result = Array<Sequence>(seq.length);
-    for (let i = seq.length-1; i > -1; i--) {
-        let column: Sequence = [];
+    const result = Array<Sequence>(seq.length);
+    for (let i = seq.length - 1; i > -1; i--) {
+        const column: Sequence = [];
         for (let j = 0; j < seq[0].length; j++) {
             const mp = seqParent[i][j];
             if (seqParent[i][j] === -1) {
@@ -217,15 +227,15 @@ export function transform0YToBMS(seq: Matrix, seqParent: Matrix): Matrix {
 }
 
 export function transformBMSTo0Y(mat: Matrix, matParent: Matrix): Sequence {
-    let result = Array<Sequence>(mat.length);
-    for (let i = mat.length-1; i > -1; i--) {
-        let column: Sequence = [];
+    const result = Array<Sequence>(mat.length);
+    for (let i = mat.length - 1; i > -1; i--) {
+        const column: Sequence = [];
         for (let j = 0; j < mat[0].length; j++) {
             const mp = matParent[i][j];
             if (matParent[i][j] === -1) {
                 column.push(1);
             } else {
-                column.push(column[mp] + result[i+1][j]);
+                column.push(column[mp] + result[i + 1][j]);
             }
         }
         result[i] = column;
@@ -250,7 +260,7 @@ function seqMatrix(seq: Sequence, depth: number): [Sequence, Sequence] {
         return [seq, parents];
     }
     const [prevSeq, prevParents] = seqMatrix(seq, depth - 1);
-    const legs = prevSeq.map((val, i) => 
+    const legs = prevSeq.map((val, i) =>
         prevParents[i] === -1 ? 1 : val - prevSeq[prevParents[i]]
     );
     const parents = calculateParentWithPreviousAncestors(legs, prevParents);
@@ -290,19 +300,19 @@ function parent(seq: Sequence, x: number): number {
 }
 
 export function expand(mat: Matrix, matParent: Matrix, times: number): Matrix {
-    let nonZero = mat.length-1;
-    while (mat[nonZero][mat[0].length-1] === 0) {
+    let nonZero = mat.length - 1;
+    while (mat[nonZero][mat[0].length - 1] === 0) {
         nonZero--;
     }
-    const badroot = matParent[nonZero][mat[0].length-1];
+    const badroot = matParent[nonZero][mat[0].length - 1];
     let badpart: Matrix = [];
-    let badpartParent: Matrix = [];
+    const badpartParent: Matrix = [];
     let ascendingJudgment: Matrix = [];
     for (let i = 0; i < mat.length; i++) {
-        let column: Sequence = [];
-        let columnParent: Sequence = [];
-        let columnBool: Sequence = [];
-        for (let j = badroot; j < mat[0].length-1; j++) {
+        const column: Sequence = [];
+        const columnParent: Sequence = [];
+        const columnBool: Sequence = [];
+        for (let j = badroot; j < mat[0].length - 1; j++) {
             column.push(mat[i][j]);
             columnParent.push(matParent[i][j] < badroot ? -1 : matParent[i][j] - badroot);
             if (j === badroot || columnBool[columnParent[j - badroot]]) {
@@ -315,18 +325,18 @@ export function expand(mat: Matrix, matParent: Matrix, times: number): Matrix {
         badpartParent.push(columnParent);
         ascendingJudgment.push(columnBool);
     }
-    let delta: Sequence = [];
+    const delta: Sequence = [];
     for (let i = 0; i < mat.length; i++) {
-        if (i < nonZero) delta.push(mat[i][mat[0].length-1] - badpart[i][0]);
+        if (i < nonZero) delta.push(mat[i][mat[0].length - 1] - badpart[i][0]);
         else delta.push(0);
     }
     badpart = transformMatrix(badpart);
     ascendingJudgment = transformMatrix(ascendingJudgment);
     let result = transformMatrix(mat).slice(0, -1);
     for (let i = 1; i <= times; i++) {
-        let ascendBadpart: Matrix = [];
+        const ascendBadpart: Matrix = [];
         for (let j = 0; j < badpart.length; j++) {
-            let column: Sequence = [];
+            const column: Sequence = [];
             for (let k = 0; k < badpart[0].length; k++) {
                 column.push(badpart[j][k] + (i * delta[k] * ascendingJudgment[j][k]));
             }

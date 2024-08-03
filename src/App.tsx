@@ -1,18 +1,7 @@
 import { useState } from 'react';
-import { ReactP5Wrapper, SketchProps } from 'react-p5-wrapper';
+import { ReactP5Wrapper } from 'react-p5-wrapper';
 import './App.css';
 import { createMatrix, createMatrixForMatrix, expand, isSequence, Matrix, parseString, sketch_input, transform0YToBMS, transformBMSTo0Y, transformMatrix } from './picture';
-
-export type MySketchProps = SketchProps & {
-  inputNumberList: string;
-  numberSize: number;
-  numberRange: number;
-  numberHeight: number;
-  sequenceHeight: number;
-  select: string;
-  delete1: boolean;
-  deleteline: boolean;
-};
 
 function App() {
   const [inputA, setInputA] = useState('1,4,6,3,7,9,7\n(0)(1,1,1)(2,1)(1,1)(2,2,1)(3,1)(2,2,1)');
@@ -51,7 +40,7 @@ function App() {
     } else {
       const trunsoutputMat = transformMatrix(outputMat);
       const strarr = trunsoutputMat.map(x => "(" + x.slice(0,-1).toString() + ")");
-      let str = inputA + "\n" + strarr.toString().replace(/\),\(/g,"\)\(");
+      const str = inputA + "\n" + strarr.toString().replace(/\),\(/g,")(");
       setInputA(str);
     }
     return;
