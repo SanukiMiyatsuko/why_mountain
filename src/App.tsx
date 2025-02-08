@@ -260,7 +260,7 @@ function App() {
           Naruyoko
         </a>
         .<br />
-        Last updated: 2024/07/13
+        Last updated: 2025/02/08
       </footer>
     </div>
   );
