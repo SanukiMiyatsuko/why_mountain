@@ -51,10 +51,12 @@ function App() {
       str = inputA + "\n" + str;
       setInputA(str);
     } else {
-      if (outputMat[outputMat.length-1].every(x => x === 0)) outputMat = outputMat.slice(0,outputMat.length-1);
+      while (outputMat[outputMat.length-1].every(x => x === 0)) {
+        outputMat = outputMat.slice(0,-1);
+      }
       const trunsoutputMat = transpose(outputMat);
       const strarr = trunsoutputMat.map(
-        (x) => "(" + x.slice(0, -1).toString() + ")"
+        (x) => "(" + x.toString() + ")"
       );
       const str = inputA + "\n" + strarr.toString().replace(/\),\(/g, ")(");
       setInputA(str);

@@ -305,8 +305,12 @@ export function expand(mat: Matrix, matParent: Matrix, times: number): Matrix {
 
   // 非零最下行 nonZero
   let nonZero = mat.length - 1;
-  while (mat[nonZero][rowEnd] === 0) {
+  while (nonZero > -1 && mat[nonZero][rowEnd] === 0) {
     nonZero--;
+  }
+  if (nonZero === -1) {
+    for (let i = 0; i < mat.length; i++) mat[i] = mat[i].slice(0,-1);
+    return mat;
   }
 
   const badroot = matParent[nonZero][rowEnd];
